@@ -5,9 +5,17 @@ const upload = multer({ storage: multer.memoryStorage() });
 const { authMiddleware, adminOnly } = require('../middleware/authMiddleware');
 const ctrl = require('../controllers/lineController');
 
+// =======================
+// 1) مسار عام بدون تسجيل دخول
+//     GET /api/lines  => قائمة الخطوط للواجهة الرئيسية في Flutter
+// =======================
+router.get('/', ctrl.getAll);
+
+// =======================
+// 2) ما بعد هذا السطر يحتاج auth
+// =======================
 router.use(authMiddleware);
 
-router.get('/', ctrl.getAll);
 router.get('/:id', ctrl.getOne);
 router.post('/', adminOnly, ctrl.validators, ctrl.create);
 router.put('/:id', adminOnly, ctrl.update);
