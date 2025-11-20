@@ -1,8 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const Line = require('../models/Line');
 const { classifyStatus, renewForOneMonth } = require('../utils/dateUtils');
-const { importLinesFromCsv } = require('../utils/csvImport');
-
+const { importLinesFromCsv } = require('../services/lineCsvService');
 exports.validators = [
   body('personName').notEmpty(),
   body('phoneNumber').notEmpty(),
@@ -84,8 +83,9 @@ exports.renew = async (req,res) => {
   }
 };
 
-exports.importCsv = async (req,res) => {
+exports.importCsv = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'file required' });
+
   try {
     const inserted = await importLinesFromCsv(req.file.buffer);
     res.json({ message: `Imported ${inserted} lines` });
